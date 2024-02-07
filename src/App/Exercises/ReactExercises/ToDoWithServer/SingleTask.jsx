@@ -1,9 +1,17 @@
 // import { PropaneSharp } from '@mui/icons-material';
 import { BinSymbol } from '../../../Components/ToDoComponents/Bin';
+import { PenSymbol } from '../../../Components/ToDoComponents/Pen';
 import { TickSymbol } from '../../../Components/ToDoComponents/Tick';
 import './styles.css';
 
-export function SingleTask({ task, binFunc, tickFunc, del_error, done_error }) {
+export function SingleTask({
+  del_error,
+  done_error,
+  task,
+  binFunc,
+  tickFunc,
+  penFunc,
+}) {
   const dataStyler = (created) => {
     let date = created.slice(0, 10);
     const dateArray = date.split('-').reverse();
@@ -27,7 +35,7 @@ export function SingleTask({ task, binFunc, tickFunc, del_error, done_error }) {
       return 'button-no-style error';
     }
   };
-  console.log(task, 'task data styler');
+  // console.log(task, 'task data styler');
 
   return (
     <div key={task.id} className={doneOrInProgress(task.isDone)}>
@@ -41,17 +49,27 @@ export function SingleTask({ task, binFunc, tickFunc, del_error, done_error }) {
       </div>
       <div className="right-block">
         <div className="task-buttons-block">
-          {del_error !== task.id && !task.isDone && (
+          {!task.isDone && (
             <button
               onClick={task.id === done_error ? () => {} : tickFunc}
               className={doneErrorClassName(done_error, task.id)}
             >
               <TickSymbol />
-              {done_error === task.id && (
-                <p className="req-failure done">nie udało się ukończyć</p>
-              )}
             </button>
           )}
+          {!task.isDone && (
+            <button
+              onClick={penFunc}
+              className={
+                del_error !== task.id
+                  ? 'button-no-style bin'
+                  : 'button-no-style error'
+              }
+            >
+              <PenSymbol />
+            </button>
+          )}
+
           <button
             onClick={binFunc}
             className={
@@ -61,19 +79,19 @@ export function SingleTask({ task, binFunc, tickFunc, del_error, done_error }) {
             }
           >
             <BinSymbol />
+          </button>
+          <div>
             {del_error === task.id && (
               <p className="req-failure">nie udało się usunąć</p>
             )}
-          </button>
+            {done_error === task.id && (
+              <p className="req-failure">nie udało się ukończyć</p>
+            )}
+          </div>
         </div>
+
         <div className="task-info-block">
           {task.isDone && (
-            <div className="task-done">
-              <TickSymbol />
-              <p className="task-info">{dataStyler(task.doneDate)}</p>
-            </div>
-          )}
-          {task.isdone && (
             <div className="task-done">
               <TickSymbol />
               <p className="task-info">{dataStyler(task.doneDate)}</p>
